@@ -1,23 +1,16 @@
+import React, { ReactElement } from "react";
 import { StyleSheet, View, Image } from "react-native";
-import {
-    useFonts,
-    DeliusUnicase_400Regular,
-    DeliusUnicase_700Bold
-} from "@expo-google-fonts/delius-unicase";
-import AppLoading from "expo-app-loading";
-import { Text } from "@components";
+import { Text, AppBootstrap } from "@components";
 
-export default function App() {
-    const [fontLoaded] = useFonts({ DeliusUnicase_700Bold, DeliusUnicase_400Regular });
-
-    if (!fontLoaded) return <AppLoading />;
-
+export default function App(): ReactElement {
     return (
-        <View style={styles.container}>
-            <Text onPress={() => alert(true)} style={{ fontSize: 25 }}>
-                Hello World!! <Text weight="400">Hi whats up</Text>
-            </Text>
-        </View>
+        <AppBootstrap>
+            <View style={styles.container}>
+                <Text onPress={() => alert(true)} style={{ fontSize: 25 }}>
+                    Hello World!!
+                </Text>
+            </View>
+        </AppBootstrap>
     );
 }
 
