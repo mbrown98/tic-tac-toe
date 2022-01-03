@@ -9,6 +9,12 @@ const styles = StyleSheet.create({
         height: 150,
         maxWidth: "60%",
         resizeMode: "contain"
+    },
+    buttons: {
+        marginTop: 18
+    },
+    button: {
+        marginBottom: 20
     }
 });
 
