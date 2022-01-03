@@ -7,7 +7,13 @@ export default function Game(): React.ReactElement {
     return (
         <GradientBackground>
             <SafeAreaView style={styles.container}>
-                <Board state={["x", "o", null, "x", "o", null, "x", "o", null]} size={300} />
+                <Board
+                    onCellPressed={index => {
+                        alert(index);
+                    }}
+                    state={["x", "o", null, "x", "o", "x", "x", "o", null]}
+                    size={400}
+                />
             </SafeAreaView>
         </GradientBackground>
     );
