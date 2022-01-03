@@ -4,7 +4,12 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { View, Text } from "react-native";
 import { Home, Game } from "@screens";
 
-const Stack = createNativeStackNavigator();
+export type StackNavigatorParams = {
+    Home: undefined;
+    Game: { gameId: string };
+};
+
+const Stack = createNativeStackNavigator<StackNavigatorParams>();
 
 export default function Navigator(): ReactElement {
     return (
