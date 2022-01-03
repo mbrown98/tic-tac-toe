@@ -1,15 +1,12 @@
 import React, { ReactElement } from "react";
 import { StyleSheet, View, Image } from "react-native";
 import { Text, AppBootstrap } from "@components";
+import Navigator from "@config/navigator";
 
 export default function App(): ReactElement {
     return (
         <AppBootstrap>
-            <View style={styles.container}>
-                <Text onPress={() => alert(true)} style={{ fontSize: 25 }}>
-                    Hello World!!
-                </Text>
-            </View>
+            <Navigator />
         </AppBootstrap>
     );
 }
