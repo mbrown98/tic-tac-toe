@@ -1,6 +1,6 @@
 import React, { ReactElement } from "react";
 import { GradientBackground } from "@components";
-import { View, Text, Button, ScrollView } from "react-native";
+import { View, Text, Button, ScrollView, Image } from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { StackNavigatorParams } from "@config/navigator";
 import styles from "./home.styles";
@@ -13,11 +13,7 @@ export default function Home({ navigation }: HomeProps): ReactElement {
     return (
         <GradientBackground>
             <ScrollView contentContainerStyle={styles.container}>
-                <Text>Home</Text>
-                <Button
-                    title="Game"
-                    onPress={() => navigation.navigate("Game", { gameId: "jhui" })}
-                />
+                <Image source={require("@assets/xo.png")} style={styles.logo} />
             </ScrollView>
         </GradientBackground>
     );
