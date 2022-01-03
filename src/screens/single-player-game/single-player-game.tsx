@@ -2,12 +2,12 @@ import React from "react";
 import { Text, SafeAreaView } from "react-native";
 import { GradientBackground } from "@components";
 import styles from "./single-player-game.styles";
-
+import { Board } from "@components";
 export default function Game(): React.ReactElement {
     return (
         <GradientBackground>
             <SafeAreaView style={styles.container}>
-                <Text style={{ color: "white" }}>Game</Text>
+                <Board state={["x", "o", null, "x", "o", null, "x", "o", null]} size={300} />
             </SafeAreaView>
         </GradientBackground>
     );
