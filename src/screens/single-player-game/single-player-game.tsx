@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { SafeAreaView } from "react-native";
 import { GradientBackground } from "@components";
 import styles from "./single-player-game.styles";
@@ -8,16 +8,35 @@ import { BoardState } from "@utils";
 
 export default function Game(): React.ReactElement {
     const b: BoardState = ["x", "o", null, "x", "o", "x", "x", "o", null];
+    const [state, setState] = useState<BoardState>([
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+    ]);
     printFormattedBoard(b);
-    console.log(isTerminal(b));
+
+    const handleOnCellPressed = (cell: number): void => {
+        const stateCopy: BoardState = [...state];
+        if (stateCopy[cell] || isTerminal(stateCopy)) return;
+        stateCopy[cell] = "x";
+        setState(stateCopy);
+    };
+
     return (
         <GradientBackground>
             <SafeAreaView style={styles.container}>
                 <Board
-                    onCellPressed={index => {
-                        alert(index);
+                    disabled={Boolean(isTerminal(state))}
+                    onCellPressed={cell => {
+                        handleOnCellPressed(cell);
                     }}
-                    state={b}
+                    state={state}
                     size={400}
                 />
             </SafeAreaView>

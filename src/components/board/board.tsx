@@ -6,10 +6,16 @@ import Text from "../text/text";
 type BoardProps = {
     state: BoardState;
     size: number;
+    disabled?: boolean;
     onCellPressed?: (index: number) => void;
 };
 
-export default function Board({ state, size, onCellPressed }: BoardProps): React.ReactElement {
+export default function Board({
+    state,
+    size,
+    disabled,
+    onCellPressed
+}: BoardProps): React.ReactElement {
     return (
         <View
             style={{
@@ -23,6 +29,7 @@ export default function Board({ state, size, onCellPressed }: BoardProps): React
             {state.map((cell, i) => {
                 return (
                     <TouchableOpacity
+                        disabled={disabled || cell !== null}
                         onPress={() => onCellPressed && onCellPressed(i)}
                         key={i}
                         style={{
