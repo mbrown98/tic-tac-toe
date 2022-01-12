@@ -19,6 +19,8 @@ export default function Game(): React.ReactElement {
 
     const [isHumanMaximizing, setIsHumanMaximizing] = useState<boolean>(true);
 
+    const playSound = useSounds();
+
     const gameResult = isTerminal(state);
 
     const insertCell = (cell: number, symbol: "x" | "o"): void => {
@@ -27,11 +29,7 @@ export default function Game(): React.ReactElement {
         stateCopy[cell] = symbol;
         setState(stateCopy);
         try {
-            symbol === "x"
-                ? popSoundRef.current?.replayAsync()
-                : pop2SoundRef.current?.replayAsync();
-
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            symbol === "x" ? playSound("pop1") : playSound("pop2");
         } catch (error) {
             console.log(error);
         }
@@ -58,31 +56,16 @@ export default function Game(): React.ReactElement {
             // game is over
             const winner = getWinner(gameResult.winner);
             if (winner === "HUMAN") {
-                try {
-                    winSoundRef.current?.replayAsync();
-                    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-                    alert("You won");
-                } catch (error) {
-                    console.log(error);
-                }
+                playSound("win");
+                alert("You won");
             }
             if (winner === "BOT") {
-                try {
-                    lossSoundRef.current?.replayAsync();
-                    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
-                    alert("You Lost");
-                } catch (error) {
-                    console.log(error);
-                }
+                playSound("loss");
+                alert("You Lost");
             }
             if (winner === "DRAW") {
-                try {
-                    drawSoundRef.current?.replayAsync();
-                    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
-                    alert("It's a draw");
-                } catch (error) {
-                    console.log(error);
-                }
+                playSound("draw");
+                alert("It's a draw");
             }
         } else {
             if (turn === "BOT") {

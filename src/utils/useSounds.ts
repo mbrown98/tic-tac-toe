@@ -2,12 +2,48 @@ import { useRef, useEffect } from "react";
 import { Audio, Video } from "expo-av";
 import * as Haptics from "expo-haptics";
 
-export default function useSounds() {
+type SoundType = "pop1" | "pop2" | "win" | "loss" | "draw";
+
+export default function useSounds(): (sound: SoundType) => void {
     const popSoundRef = useRef<Audio.Sound | null>(null);
     const pop2SoundRef = useRef<Audio.Sound | null>(null);
     const winSoundRef = useRef<Audio.Sound | null>(null);
     const lossSoundRef = useRef<Audio.Sound | null>(null);
     const drawSoundRef = useRef<Audio.Sound | null>(null);
+
+    const playSound = async (sound: SoundType): Promise<void> => {
+        const soundsMap = {
+            pop1: popSoundRef,
+            pop2: pop2SoundRef,
+            win: winSoundRef,
+            loss: lossSoundRef,
+            draw: drawSoundRef
+        };
+
+        try {
+            const status = await soundsMap[sound].current?.getStatusAsync();
+            status && soundsMap[sound].current?.replayAsync();
+            switch (sound) {
+                case "pop1":
+                case "pop2":
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    break;
+                case "win":
+                    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+                    break;
+                case "loss":
+                    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+                    break;
+                case "draw":
+                    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+                    break;
+                default:
+                    break;
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     useEffect(() => {
         // load sounds
@@ -42,4 +78,6 @@ export default function useSounds() {
             drawSoundObject && drawSoundObject.unloadAsync();
         };
     }, []);
+
+    return playSound;
 }
