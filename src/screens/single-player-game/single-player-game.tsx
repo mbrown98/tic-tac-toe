@@ -3,7 +3,7 @@ import { SafeAreaView } from "react-native";
 import { GradientBackground } from "@components";
 import styles from "./single-player-game.styles";
 import { Board } from "@components";
-import { printFormattedBoard, isEmpty, isFull, getAvailableMoves, isTerminal } from "@utils";
+import { isEmpty, isTerminal } from "@utils";
 import { BoardState, getBestMove } from "@utils";
 
 export default function Game(): React.ReactElement {
@@ -55,8 +55,6 @@ export default function Game(): React.ReactElement {
             }
         }
     }, [state, turn]);
-
-    printFormattedBoard(b);
 
     return (
         <GradientBackground>
