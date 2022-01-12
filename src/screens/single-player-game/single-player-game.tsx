@@ -6,6 +6,7 @@ import { Board } from "@components";
 import { isEmpty, isTerminal } from "@utils";
 import { BoardState, getBestMove } from "@utils";
 import { Audio, Video } from "expo-av";
+import * as Haptics from "expo-haptics";
 
 export default function Game(): React.ReactElement {
     const b: BoardState = ["x", "o", null, "x", "o", "x", "x", "o", null];
@@ -34,6 +35,8 @@ export default function Game(): React.ReactElement {
             symbol === "x"
                 ? popSoundRef.current?.replayAsync()
                 : pop2SoundRef.current?.replayAsync();
+
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
         } catch (error) {
             console.log(error);
         }
