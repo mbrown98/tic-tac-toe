@@ -3,6 +3,7 @@ import { View, TouchableOpacity } from "react-native";
 import { BoardState, BoardResult } from "@utils";
 import BoardLine from "./board-line";
 import Text from "../text/text";
+import styles from "./board.styles";
 
 type BoardProps = {
     state: BoardState;
@@ -21,13 +22,13 @@ export default function Board({
 }: BoardProps): React.ReactElement {
     return (
         <View
-            style={{
-                width: size,
-                height: size,
-                backgroundColor: "white",
-                flexDirection: "row",
-                flexWrap: "wrap"
-            }}
+            style={[
+                styles.board,
+                {
+                    width: size,
+                    height: size
+                }
+            ]}
         >
             {state.map((cell, i) => {
                 return (
@@ -35,24 +36,13 @@ export default function Board({
                         disabled={disabled || cell !== null}
                         onPress={() => onCellPressed && onCellPressed(i)}
                         key={i}
-                        style={{
-                            height: "33.33333%",
-                            width: "33.33333%",
-                            borderWidth: 1,
-                            alignItems: "center",
-                            justifyContent: "center"
-                        }}
+                        style={[styles.cell, styles[`cell${i}` as "cell"]]}
                     >
-                        <Text style={{ fontSize: size / 8 }}>{cell}</Text>
+                        <Text style={[styles.cellText, { fontSize: size / 7 }]}>{cell}</Text>
                     </TouchableOpacity>
                 );
             })}
-            {true && (
-                <BoardLine
-                    size={size}
-                    gameResult={{ winner: "o", diagonal: "MAIN", direction: "D" }}
-                />
-            )}
+            {gameResult && <BoardLine size={size} gameResult={gameResult} />}
         </View>
     );
 }
