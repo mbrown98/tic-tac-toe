@@ -93,6 +93,7 @@ export default function Game(): React.ReactElement {
                     onCellPressed={cell => {
                         handleOnCellPressed(cell);
                     }}
+                    gameResult={gameResult}
                     state={state}
                     size={400}
                 />
