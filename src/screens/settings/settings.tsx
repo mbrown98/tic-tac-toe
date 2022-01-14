@@ -1,18 +1,47 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ScrollView, TouchableOpacity, View, Switch } from "react-native";
 import { GradientBackground, Text } from "@components";
 import styles from "./settings.styles";
 import { colors } from "@utils";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export default function Settings(): React.ReactElement {
-    const [state, setState] = useState(false);
+const difficulties = {
+    "1": "Beginner",
+    "2": "Intermediate",
+    "3": "Hard",
+    "-1": "Impossible"
+};
 
-    const difficulties = {
-        "1": "Beginner",
-        "2": "Intermediate",
-        "3": "Hard",
-        "-1": "Impossible"
+type SettingsType = {
+    difficulty: keyof typeof difficulties;
+    haptics: boolean;
+    sounds: boolean;
+};
+
+const defaultSettings: SettingsType = {
+    difficulty: "-1",
+    haptics: true,
+    sounds: true
+};
+
+export default function Settings(): React.ReactElement | null {
+    const [settings, setSettings] = useState<SettingsType | null>(null);
+
+    const loadSettings = async () => {
+        try {
+            const settings = await AsyncStorage.getItem("@settings");
+            settings !== null ? setSettings(JSON.parse(settings)) : setSettings(defaultSettings);
+        } catch (error) {
+            setSettings(defaultSettings);
+        }
     };
+
+    useEffect(() => {
+        loadSettings();
+    }, []);
+
+    if (!settings) return null;
+
     return (
         <GradientBackground>
             <ScrollView contentContainerStyle={styles.container}>
@@ -21,8 +50,29 @@ export default function Settings(): React.ReactElement {
                     <View style={styles.choices}>
                         {Object.keys(difficulties).map(level => {
                             return (
-                                <TouchableOpacity style={styles.choice} key={level}>
-                                    <Text style={styles.choiceText}>
+                                <TouchableOpacity
+                                    style={[
+                                        styles.choice,
+                                        {
+                                            backgroundColor:
+                                                settings.difficulty === level
+                                                    ? colors.lightPurple
+                                                    : colors.lightGreen
+                                        }
+                                    ]}
+                                    key={level}
+                                >
+                                    <Text
+                                        style={[
+                                            styles.choiceText,
+                                            {
+                                                color:
+                                                    settings.difficulty === level
+                                                        ? colors.lightGreen
+                                                        : colors.darkPurple
+                                            }
+                                        ]}
+                                    >
                                         {difficulties[level as keyof typeof difficulties]}
                                     </Text>
                                 </TouchableOpacity>
@@ -36,8 +86,8 @@ export default function Settings(): React.ReactElement {
                         trackColor={{ false: colors.purple, true: colors.lightPurple }}
                         thumbColor={colors.lightGreen}
                         ios_backgroundColor={colors.purple}
-                        value={state}
-                        onValueChange={() => setState(!state)}
+                        value={settings.sounds}
+                        // onValueChange={() => setState(!state)}
                     />
                 </View>
                 <View style={[styles.field, styles.switchField]}>
@@ -46,8 +96,8 @@ export default function Settings(): React.ReactElement {
                         trackColor={{ false: colors.purple, true: colors.lightPurple }}
                         thumbColor={colors.lightGreen}
                         ios_backgroundColor={colors.purple}
-                        value={state}
-                        onValueChange={() => setState(!state)}
+                        value={settings.haptics}
+                        // onValueChange={() => setState(!state)}
                     />
                 </View>
             </ScrollView>
