@@ -21,6 +21,8 @@ export default function Game(): React.ReactElement {
 
     const [isHumanMaximizing, setIsHumanMaximizing] = useState<boolean>(true);
 
+    const [gamesCount, setGameCount] = useState({ wins: 0, losses: 0, draws: 0 });
+
     const playSound = useSounds();
 
     const gameResult = isTerminal(state);
@@ -53,21 +55,26 @@ export default function Game(): React.ReactElement {
         return "DRAW";
     };
 
+    const newGame = () => {
+        setState([null, null, null, null, null, null, null, null, null]);
+        setTurn(Math.random() < 0.5 ? "HUMAN" : "BOT");
+    };
+
     useEffect(() => {
         if (gameResult) {
             // game is over
             const winner = getWinner(gameResult.winner);
             if (winner === "HUMAN") {
+                setGameCount({ ...gamesCount, wins: gamesCount.wins + 1 });
                 playSound("win");
-                alert("You won");
             }
             if (winner === "BOT") {
+                setGameCount({ ...gamesCount, losses: gamesCount.losses + 1 });
                 playSound("loss");
-                alert("You Lost");
             }
             if (winner === "DRAW") {
+                setGameCount({ ...gamesCount, draws: gamesCount.draws + 1 });
                 playSound("draw");
-                alert("It's a draw");
             }
         } else {
             if (turn === "BOT") {
@@ -95,15 +102,15 @@ export default function Game(): React.ReactElement {
                     <View style={styles.results}>
                         <View style={styles.resultsBox}>
                             <Text style={styles.resultsTitle}>Wins</Text>
-                            <Text style={styles.resultsCount}>0</Text>
+                            <Text style={styles.resultsCount}>{gamesCount.wins}</Text>
                         </View>
                         <View style={styles.resultsBox}>
                             <Text style={styles.resultsTitle}>Draws</Text>
-                            <Text style={styles.resultsCount}>0</Text>
+                            <Text style={styles.resultsCount}>{gamesCount.draws}</Text>
                         </View>
                         <View style={styles.resultsBox}>
                             <Text style={styles.resultsTitle}>Loses</Text>
-                            <Text style={styles.resultsCount}>0</Text>
+                            <Text style={styles.resultsCount}>{gamesCount.losses}</Text>
                         </View>
                     </View>
                 </View>
@@ -116,10 +123,16 @@ export default function Game(): React.ReactElement {
                     state={state}
                     size={SCREEN_WIDTH - 60}
                 />
-                <View style={styles.modal}>
-                    <Text style={styles.modalText}>You Won</Text>
-                    <Button title="Play Again" />
-                </View>
+                {gameResult && (
+                    <View style={styles.modal}>
+                        <Text style={styles.modalText}>
+                            {getWinner(gameResult.winner) === "HUMAN" && "You Won"}
+                            {getWinner(gameResult.winner) === "BOT" && "You Lost"}
+                            {getWinner(gameResult.winner) === "DRAW" && "It's a Draw"}
+                        </Text>
+                        <Button title="Play Again" onPress={() => newGame()} />
+                    </View>
+                )}
             </SafeAreaView>
         </GradientBackground>
     );
