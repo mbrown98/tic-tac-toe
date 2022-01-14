@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { SafeAreaView, Dimensions } from "react-native";
-import { GradientBackground } from "@components";
+import { SafeAreaView, Dimensions, View } from "react-native";
+import { Button, GradientBackground, Text } from "@components";
 import styles from "./single-player-game.styles";
 import { Board } from "@components";
 import { Cell, isEmpty, isTerminal } from "@utils";
@@ -90,6 +90,23 @@ export default function Game(): React.ReactElement {
     return (
         <GradientBackground>
             <SafeAreaView style={styles.container}>
+                <View>
+                    <Text style={styles.difficulty}>Difficulty: Hard</Text>
+                    <View style={styles.results}>
+                        <View style={styles.resultsBox}>
+                            <Text style={styles.resultsTitle}>Wins</Text>
+                            <Text style={styles.resultsCount}>0</Text>
+                        </View>
+                        <View style={styles.resultsBox}>
+                            <Text style={styles.resultsTitle}>Draws</Text>
+                            <Text style={styles.resultsCount}>0</Text>
+                        </View>
+                        <View style={styles.resultsBox}>
+                            <Text style={styles.resultsTitle}>Loses</Text>
+                            <Text style={styles.resultsCount}>0</Text>
+                        </View>
+                    </View>
+                </View>
                 <Board
                     disabled={Boolean(isTerminal(state)) || turn !== "HUMAN"}
                     onCellPressed={cell => {
@@ -99,6 +116,10 @@ export default function Game(): React.ReactElement {
                     state={state}
                     size={SCREEN_WIDTH - 60}
                 />
+                <View style={styles.modal}>
+                    <Text style={styles.modalText}>You Won</Text>
+                    <Button title="Play Again" />
+                </View>
             </SafeAreaView>
         </GradientBackground>
     );
