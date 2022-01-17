@@ -1,13 +1,35 @@
-import React from "react";
-import { createContext, useContext } from "react";
+import React, { ReactNode, useState, createContext, useContext, useEffect } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Alert } from "react-native";
 
-const SettingsContext = createContext({
-    settings: {
-        sounds: true
-    }
-});
+const difficulties = {
+    "1": "Beginner",
+    "2": "Intermediate",
+    "3": "Hard",
+    "-1": "Impossible"
+};
 
-function useSettings() {
+type SettingsType = {
+    difficulty: keyof typeof difficulties;
+    haptics: boolean;
+    sounds: boolean;
+};
+
+const defaultSettings: SettingsType = {
+    difficulty: "-1",
+    haptics: true,
+    sounds: true
+};
+
+type SettingsContextType = {
+    settings: SettingsType | null;
+    loadSettings: () => void;
+    saveSetting: <T extends keyof SettingsType>(settings: T, value: SettingsType[T]) => void;
+};
+
+const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
+
+function useSettings(): SettingsContextType {
     const context = useContext(SettingsContext);
     if (!context) {
         throw new Error("useSettings must be used within a SettingsProvider");
@@ -15,17 +37,48 @@ function useSettings() {
     return context;
 }
 
-function SettingsProvider(props) {
+function SettingsProvider(props: { children: ReactNode }): React.ReactElement {
+    const [settings, setSettings] = useState<SettingsType | null>(null);
+
+    // IMPORTANT
+    const saveSetting = async <T extends keyof SettingsType>(
+        setting: T,
+        value: SettingsType[T]
+    ) => {
+        try {
+            const oldSettings = settings ? settings : defaultSettings;
+            const newSettings = { ...oldSettings, [setting]: value };
+            await AsyncStorage.setItem("@settings", JSON.stringify(newSettings));
+            setSettings(newSettings);
+        } catch (error) {
+            console.log("error", error);
+            Alert.alert("Error!", "An error has occurred");
+        }
+    };
+
+    const loadSettings = async () => {
+        try {
+            const settings = await AsyncStorage.getItem("@settings");
+            settings !== null ? setSettings(JSON.parse(settings)) : setSettings(defaultSettings);
+        } catch (error) {
+            setSettings(defaultSettings);
+        }
+    };
+
+    useEffect(() => {
+        loadSettings();
+    }, []);
+
     return (
         <SettingsContext.Provider
             {...props}
             value={{
-                settings: {
-                    sounds: true
-                }
+                settings,
+                saveSetting,
+                loadSettings
             }}
         />
     );
 }
 
-export { useSettings, SettingsProvider };
+export { useSettings, SettingsProvider, difficulties };
