@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { ScrollView, TouchableOpacity, View, Switch, Alert } from "react-native";
 import { GradientBackground, Text } from "@components";
 import styles from "./settings.styles";
 import { colors } from "@utils";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useSettings } from "@contexts/settings-content";
 
 const difficulties = {
     "1": "Beginner",
@@ -26,6 +27,9 @@ const defaultSettings: SettingsType = {
 
 export default function Settings(): React.ReactElement | null {
     const [settings, setSettings] = useState<SettingsType | null>(null);
+
+    const context = useSettings();
+    // console.log("context", context);
 
     // IMPORTANT
     const saveSetting = async <T extends keyof SettingsType>(
