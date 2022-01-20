@@ -5,7 +5,7 @@ import styles from "./button.styles";
 
 type ButtonProps = {
     title: string;
-    loading: boolean;
+    loading?: boolean;
 } & TouchableOpacityProps;
 
 export default function Button({
