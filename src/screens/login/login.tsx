@@ -1,5 +1,6 @@
 import React, { useRef, useState } from "react";
-import { ScrollView, TextInput as NativeTextInput } from "react-native";
+import { Alert, ScrollView, TextInput as NativeTextInput } from "react-native";
+import { Auth } from "aws-amplify";
 import { Button, GradientBackground, TextInput } from "@components";
 import styles from "./login.styles";
 
@@ -13,8 +14,16 @@ export default function Login(): React.ReactElement {
         setForm({ ...form, [key]: value });
     };
 
-    const login = () => {
+    const login = async () => {
         setLoading(true);
+        const { username, password } = form;
+        try {
+            const res = await Auth.signIn(username, password);
+            console.log("res", res);
+        } catch (error) {
+            console.log("e", error);
+            Alert.alert("Error!", error.message || "Error");
+        }
 
         setLoading(false);
     };
@@ -41,7 +50,7 @@ export default function Login(): React.ReactElement {
                     secureTextEntry
                     style={{ marginBottom: 30 }}
                 />
-                <Button title="Login" onPress={login} />
+                <Button loading={loading} title="Login" onPress={login} />
             </ScrollView>
         </GradientBackground>
     );

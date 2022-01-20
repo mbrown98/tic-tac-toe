@@ -1,16 +1,26 @@
 import React from "react";
-import { View, TouchableOpacity, TouchableOpacityProps } from "react-native";
+import { View, TouchableOpacity, TouchableOpacityProps, ActivityIndicator } from "react-native";
 import { Text } from "@components";
 import styles from "./button.styles";
 
 type ButtonProps = {
     title: string;
+    loading: boolean;
 } & TouchableOpacityProps;
 
-export default function Button({ title, style, ...props }: ButtonProps): React.ReactElement {
+export default function Button({
+    title,
+    loading,
+    style,
+    ...props
+}: ButtonProps): React.ReactElement {
     return (
-        <TouchableOpacity {...props} style={[styles.button, style]}>
-            <Text style={styles.buttonText}>{title}</Text>
+        <TouchableOpacity disabled={loading} {...props} style={[styles.button, style]}>
+            {loading ? (
+                <ActivityIndicator color="black" />
+            ) : (
+                <Text style={styles.buttonText}>{title}</Text>
+            )}
         </TouchableOpacity>
     );
 }
