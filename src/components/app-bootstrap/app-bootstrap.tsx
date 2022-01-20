@@ -1,4 +1,12 @@
-import React, { ReactNode, ReactElement, useState, useEffect } from "react";
+import React, {
+    ReactNode,
+    ReactElement,
+    useState,
+    useEffect,
+    createContext,
+    Dispatch,
+    SetStateAction
+} from "react";
 import { View, Text } from "react-native";
 import {
     useFonts,
@@ -12,20 +20,32 @@ type AppBootstrapProps = {
     children: ReactNode;
 };
 
+type AuthContextType = {
+    user: { [key: string]: any } | null;
+    setUser: Dispatch<SetStateAction<{ [key: string]: any } | null>>;
+};
+
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
 export default function AppBootstrap({ children }: AppBootstrapProps): ReactElement {
     const [fontLoaded] = useFonts({ DeliusUnicase_700Bold, DeliusUnicase_400Regular });
     const [authLoaded, setAuthLoaded] = useState(false);
+    const [user, setUser] = useState<{ [key: string]: any } | null>(null);
     useEffect(() => {
         async function checkCurrentUser() {
             try {
                 const user = await Auth.currentAuthenticatedUser();
-                console.log("user", user);
+                setUser(user);
             } catch (error) {
-                console.log(error);
+                setUser(null);
             }
             setAuthLoaded(true);
         }
         checkCurrentUser();
     }, []);
-    return fontLoaded && authLoaded ? <>{children}</> : <AppLoading />;
+    return fontLoaded && authLoaded ? (
+        <AuthContext.Provider value={{ user, setUser }}>{children}</AuthContext.Provider>
+    ) : (
+        <AppLoading />
+    );
 }
