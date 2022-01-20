@@ -15,22 +15,17 @@ import {
 } from "@expo-google-fonts/delius-unicase";
 import { Auth } from "aws-amplify";
 import AppLoading from "expo-app-loading";
+import { useAuth } from "@contexts/auth-content";
 
 type AppBootstrapProps = {
     children: ReactNode;
 };
 
-type AuthContextType = {
-    user: { [key: string]: any } | null;
-    setUser: Dispatch<SetStateAction<{ [key: string]: any } | null>>;
-};
-
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
 export default function AppBootstrap({ children }: AppBootstrapProps): ReactElement {
     const [fontLoaded] = useFonts({ DeliusUnicase_700Bold, DeliusUnicase_400Regular });
+    const { setUser } = useAuth();
     const [authLoaded, setAuthLoaded] = useState(false);
-    const [user, setUser] = useState<{ [key: string]: any } | null>(null);
+
     useEffect(() => {
         async function checkCurrentUser() {
             try {
@@ -43,9 +38,5 @@ export default function AppBootstrap({ children }: AppBootstrapProps): ReactElem
         }
         checkCurrentUser();
     }, []);
-    return fontLoaded && authLoaded ? (
-        <AuthContext.Provider value={{ user, setUser }}>{children}</AuthContext.Provider>
-    ) : (
-        <AppLoading />
-    );
+    return fontLoaded && authLoaded ? <>{children}</> : <AppLoading />;
 }

@@ -5,15 +5,18 @@ import config from "./aws-exports";
 import { Text, AppBootstrap } from "@components";
 import Navigator from "@config/navigator";
 import { SettingsProvider } from "@contexts/settings-content";
+import { AuthProvider } from "@contexts/auth-content";
 
 Amplify.configure(config);
 
 export default function App(): ReactElement {
     return (
-        <AppBootstrap>
-            <SettingsProvider>
-                <Navigator />
-            </SettingsProvider>
-        </AppBootstrap>
+        <AuthProvider>
+            <AppBootstrap>
+                <SettingsProvider>
+                    <Navigator />
+                </SettingsProvider>
+            </AppBootstrap>
+        </AuthProvider>
     );
 }
