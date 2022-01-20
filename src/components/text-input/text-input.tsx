@@ -1,4 +1,4 @@
-import React from "react";
+import React, { forwardRef } from "react";
 import {
     TextInput as NativeTextInput,
     TextInputProps as NativeTextInputProps,
@@ -6,11 +6,22 @@ import {
 } from "react-native";
 import { colors } from "@utils";
 
-export default function TextInput({ style, ...props }: NativeTextInputProps): React.ReactElement {
-    return (
-        <NativeTextInput placeholderTextColor="#5d5379" style={[styles.input, style]} {...props} />
-    );
-}
+const TextInput = forwardRef<NativeTextInput, NativeTextInputProps>(
+    ({ style, ...props }: NativeTextInputProps, ref): React.ReactElement => {
+        return (
+            <NativeTextInput
+                ref={ref}
+                placeholderTextColor="#5d5379"
+                style={[styles.input, style]}
+                {...props}
+            />
+        );
+    }
+);
+
+TextInput.displayName = "TextInput";
+
+export default TextInput;
 
 // STYLE_SHEET
 const styles = StyleSheet.create({
