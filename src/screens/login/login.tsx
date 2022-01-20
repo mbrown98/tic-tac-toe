@@ -14,6 +14,19 @@ export default function Login(): React.ReactElement {
         setForm({ ...form, [key]: value });
     };
 
+    // const signUp = async () => {
+    //     try {
+    //         const res = await Auth.signUp({
+    //             username: "test",
+    //             password: "12345678",
+    //             attributes: { email: "test@example.com", name: "Test Test" }
+    //         });
+    //         console.log("res", res);
+    //     } catch (error) {
+    //         Alert.alert("Error!", error.message || "Error");
+    //     }
+    // };
+
     const login = async () => {
         setLoading(true);
         const { username, password } = form;
@@ -21,7 +34,6 @@ export default function Login(): React.ReactElement {
             const res = await Auth.signIn(username, password);
             console.log("res", res);
         } catch (error) {
-            console.log("e", error);
             Alert.alert("Error!", error.message || "Error");
         }
 
